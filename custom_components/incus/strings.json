@@ -1,0 +1,67 @@
+{
+  "config": {
+    "flow_title": "Incus",
+    "step": {
+      "user": {
+        "title": "Incus",
+        "description": "Choose how Home Assistant should connect to your Incus server.",
+        "menu_options": {
+          "tls": "Connect over TLS",
+          "unix": "Connect over Unix socket"
+        }
+      },
+      "tls": {
+        "title": "Connect over TLS",
+        "description": "Connect to a remote Incus server using a trusted client certificate.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "verify_ssl": "Verify server certificate",
+          "client_cert": "Client certificate (PEM)",
+          "client_key": "Client private key (PEM)",
+          "ca_cert": "CA certificate (PEM)"
+        },
+        "data_description": {
+          "client_cert": "The client certificate that has been trusted by the Incus server.",
+          "client_key": "The private key matching the client certificate.",
+          "ca_cert": "Optional custom CA used to verify the Incus server certificate. Leave empty to use the system trust store."
+        }
+      },
+      "unix": {
+        "title": "Connect over Unix socket",
+        "description": "Connect to an Incus server running on the same host as Home Assistant.",
+        "data": {
+          "socket_path": "Unix socket path"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the Incus server.",
+      "invalid_auth": "The Incus server does not trust this client certificate.",
+      "api_error": "The Incus server returned an error.",
+      "unknown": "Unexpected error; check the Home Assistant logs for details."
+    },
+    "abort": {
+      "already_configured": "This Incus server is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Incus options",
+        "data": {
+          "update_interval": "Update interval (seconds)",
+          "all_projects": "Include all projects",
+          "enable_instance_sensors": "Instance sensors",
+          "enable_volume_sensors": "Storage volume sensors",
+          "enable_pool_sensors": "Storage pool sensors",
+          "enable_performance_sensors": "Performance sensors (CPU, memory, network, disk)"
+        },
+        "data_description": {
+          "all_projects": "Discover instances and volumes from every Incus project, not just the default one.",
+          "enable_performance_sensors": "Disable to keep only status/capacity sensors and reduce polling load."
+        }
+      }
+    }
+  }
+}

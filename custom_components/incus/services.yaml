@@ -1,0 +1,175 @@
+# Describes the Incus services so they show up with a UI in Home Assistant.
+start_instance:
+  name: Start instance
+  description: Start an Incus instance (container or virtual machine).
+  fields:
+    instance:
+      name: Instance
+      description: Name of the Incus instance.
+      required: true
+      example: my-container
+      selector:
+        text:
+    project:
+      name: Project
+      description: Incus project the instance lives in. Defaults to the instance's own project.
+      required: false
+      example: default
+      selector:
+        text:
+    force:
+      name: Force
+      description: Force the action (only meaningful for stop/restart).
+      required: false
+      selector:
+        boolean:
+    timeout:
+      name: Timeout
+      description: How long to wait for the action, in seconds.
+      required: false
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: s
+    entry_id:
+      name: Config entry
+      description: Only act on a specific Incus config entry (useful with multiple servers).
+      required: false
+      selector:
+        text:
+
+stop_instance:
+  name: Stop instance
+  description: Stop an Incus instance (container or virtual machine).
+  fields:
+    instance:
+      name: Instance
+      description: Name of the Incus instance.
+      required: true
+      example: my-container
+      selector:
+        text:
+    project:
+      name: Project
+      description: Incus project the instance lives in. Defaults to the instance's own project.
+      required: false
+      selector:
+        text:
+    force:
+      name: Force
+      description: Force a hard stop instead of a clean shutdown.
+      required: false
+      selector:
+        boolean:
+    timeout:
+      name: Timeout
+      description: How long to wait for the instance to stop, in seconds.
+      required: false
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: s
+    entry_id:
+      name: Config entry
+      description: Only act on a specific Incus config entry (useful with multiple servers).
+      required: false
+      selector:
+        text:
+
+restart_instance:
+  name: Restart instance
+  description: Restart an Incus instance (container or virtual machine).
+  fields:
+    instance:
+      name: Instance
+      description: Name of the Incus instance.
+      required: true
+      example: my-container
+      selector:
+        text:
+    project:
+      name: Project
+      description: Incus project the instance lives in. Defaults to the instance's own project.
+      required: false
+      selector:
+        text:
+    force:
+      name: Force
+      description: Force a hard restart instead of a clean one.
+      required: false
+      selector:
+        boolean:
+    timeout:
+      name: Timeout
+      description: How long to wait for the action, in seconds.
+      required: false
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: s
+    entry_id:
+      name: Config entry
+      description: Only act on a specific Incus config entry (useful with multiple servers).
+      required: false
+      selector:
+        text:
+
+freeze_instance:
+  name: Freeze instance
+  description: Freeze (pause) a running Incus instance.
+  fields:
+    instance:
+      name: Instance
+      description: Name of the Incus instance.
+      required: true
+      selector:
+        text:
+    project:
+      name: Project
+      description: Incus project the instance lives in.
+      required: false
+      selector:
+        text:
+    entry_id:
+      name: Config entry
+      description: Only act on a specific Incus config entry.
+      required: false
+      selector:
+        text:
+
+unfreeze_instance:
+  name: Unfreeze instance
+  description: Unfreeze (resume) a frozen Incus instance.
+  fields:
+    instance:
+      name: Instance
+      description: Name of the Incus instance.
+      required: true
+      selector:
+        text:
+    project:
+      name: Project
+      description: Incus project the instance lives in.
+      required: false
+      selector:
+        text:
+    entry_id:
+      name: Config entry
+      description: Only act on a specific Incus config entry.
+      required: false
+      selector:
+        text:
+
+refresh:
+  name: Refresh
+  description: Re-read the Incus server, picking up new instances and storage volumes.
+  fields:
+    entry_id:
+      name: Config entry
+      description: Only refresh a specific Incus config entry.
+      required: false
+      selector:
+        text:
