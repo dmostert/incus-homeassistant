@@ -84,6 +84,8 @@ INSTANCE_SENSORS: tuple[IncusInstanceSensorDescription, ...] = (
             "Frozen",
             "Starting",
             "Stopping",
+            "Migrating",
+            "Creating",
             "Freezing",
             "Thawed",
             "Error",

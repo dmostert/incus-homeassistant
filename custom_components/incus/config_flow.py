@@ -178,6 +178,9 @@ class IncusConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_auth"
             except IncusConnectionError:
                 errors["base"] = "cannot_connect"
+            except IncusAPIError as err:
+                errors["base"] = "api_error"
+                _LOGGER.debug("Incus API error during setup: %s", err)
             except IncusError as err:
                 errors["base"] = "unknown"
                 _LOGGER.exception("Unexpected Incus error during setup: %s", err)

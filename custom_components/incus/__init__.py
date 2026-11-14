@@ -7,6 +7,7 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import device_registry as dr
 
 from .const import (
     CONF_CA_CERT,
@@ -22,6 +23,7 @@ from .const import (
     DEFAULT_PORT,
     DEFAULT_SOCKET_PATH,
     DOMAIN,
+    MANUFACTURER,
     PLATFORMS,
 )
 from .coordinator import IncusCoordinator
@@ -64,18 +66,33 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     params = build_connection_params(entry)
     client = IncusClient(params)
 
+    # Always close the HTTP client when the entry is unloaded. Home Assistant
+    # also runs the on-unload callbacks when setup fails, so this covers the
+    # failure paths below as well.
+    entry.async_on_unload(client.close)
+
     try:
         await client.async_connect()
         await client.async_get_server()
     except IncusAuthError as err:
-        await client.close()
         raise ConfigEntryAuthFailed(str(err)) from err
     except IncusError as err:
-        await client.close()
         raise ConfigEntryNotReady(f"Unable to connect to Incus: {err}") from err
 
     coordinator = IncusCoordinator(hass, entry, client)
     await coordinator.async_config_entry_first_refresh()
+
+    # Create the hub (server) device before the platforms run so that the
+    # instance/volume/pool devices can reference it through ``via_device_id``.
+    device = dr.async_get(hass).async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, entry.entry_id)},
+        name="Incus",
+        manufacturer=MANUFACTURER,
+        model="Incus Server",
+        configuration_url=coordinator.configuration_url,
+    )
+    coordinator.hub_device_id = device.id
 
     entry.runtime_data = coordinator
 
@@ -89,12 +106,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload an Incus config entry."""
-    coordinator: IncusCoordinator | None = entry.runtime_data
-
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
-        if coordinator is not None:
-            await coordinator.client.close()
         entry.runtime_data = None
         await async_unload_services(hass)
 

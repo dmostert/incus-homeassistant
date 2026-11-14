@@ -33,7 +33,7 @@ class IncusBaseEntity(CoordinatorEntity[IncusCoordinator]):
         self.entry = entry
 
     @property
-    def hub_device_id(self) -> tuple[str, str]:
+    def hub_device_identifier(self) -> tuple[str, str]:
         """Return the identifier of the hub (server) device."""
         return (DOMAIN, self.entry.entry_id)
 
@@ -42,7 +42,7 @@ class IncusBaseEntity(CoordinatorEntity[IncusCoordinator]):
         """Return the device info of the hub (server) device."""
         server = self.coordinator.data.server if self.coordinator.data else None
         return DeviceInfo(
-            identifiers={self.hub_device_id},
+            identifiers={self.hub_device_identifier},
             name=f"Incus ({server.name})" if server else "Incus",
             manufacturer=MANUFACTURER,
             model="Incus Server",
@@ -66,7 +66,7 @@ class IncusInstanceEntity(IncusBaseEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, f"{entry.entry_id}_instance_{instance.key}")},
             name=instance.name,
-            via_device=self.hub_device_id,
+            via_device_id=self.coordinator.hub_device_id,
             manufacturer=MANUFACTURER,
             model=f"Incus {instance.instance_type}",
         )
@@ -99,7 +99,7 @@ class IncusVolumeEntity(IncusBaseEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, f"{entry.entry_id}_volume_{volume.key}")},
             name=f"{volume.pool}/{volume.name}",
-            via_device=self.hub_device_id,
+            via_device_id=self.coordinator.hub_device_id,
             manufacturer=MANUFACTURER,
             model=f"Incus {volume.volume_type} volume",
         )
@@ -132,7 +132,7 @@ class IncusPoolEntity(IncusBaseEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, f"{entry.entry_id}_pool_{pool.name}")},
             name=f"Storage pool {pool.name}",
-            via_device=self.hub_device_id,
+            via_device_id=self.coordinator.hub_device_id,
             manufacturer=MANUFACTURER,
             model=f"Incus {pool.driver} pool",
         )

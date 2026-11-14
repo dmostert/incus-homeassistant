@@ -302,6 +302,10 @@ class IncusCoordinator(DataUpdateCoordinator[IncusData]):
         self.entry = entry
         self.client = client
         self.all_projects = entry.options.get(CONF_ALL_PROJECTS, False)
+        # Device registry id of the hub (server) device. It is filled in by
+        # ``async_setup_entry`` once the device has been created, so that child
+        # devices can reference it through ``via_device_id``.
+        self.hub_device_id: str | None = None
         # Keeps the previous CPU sample so we can turn the cumulative counter
         # into a percentage: {instance_key: (usage_ns, monotonic_ts)}.
         self._cpu_samples: dict[str, tuple[int, float]] = {}
