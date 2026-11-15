@@ -139,6 +139,22 @@ All instance services accept `instance` (name), optional `project`, `force`,
       custom_components.incus: debug
   ```
 
+## Releasing
+
+HACS uses the **tag name of the latest GitHub release** as the version. If no
+release exists it falls back to the first 7 characters of the last commit, which
+is why an unreleased repository shows a commit hash as its version.
+
+To publish a new version:
+
+1. Bump `version` in `custom_components/incus/manifest.json`.
+2. Commit and push to `main`.
+
+The [`Release`](.github/workflows/release.yml) workflow then creates the matching
+`v<version>` tag and GitHub release automatically (it skips if the release
+already exists). Alternatively, create a release manually with
+`gh release create v<version> --generate-notes`.
+
 ## License
 
 [MIT](LICENSE)
